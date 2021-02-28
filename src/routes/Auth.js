@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { fAuth } from "../firebase";
+import { fAuth, firebaseInstance } from "../firebase";
+import "firebase/auth";
 
 function Auth() {
   const [email, setEmail] = useState("");
@@ -24,8 +25,8 @@ function Auth() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    let account;
     try {
-      let account;
       if (createAccount) {
         // create account
         if (password === confirmPassword) {
@@ -35,7 +36,7 @@ function Auth() {
           setMissMatch(true);
           setConfirmPassword("");
         }
-      } else {
+      } else if (!createAccount) {
         // log in
         account = await fAuth.signInWithEmailAndPassword(email, password);
       }
@@ -49,6 +50,22 @@ function Auth() {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+  };
+  const socialOnClick = async (e) => {
+    const {
+      target: { name },
+    } = e;
+    console.log(name);
+    // let token, user;
+    if (name === "google") {
+      await fAuth.signInWithPopup(
+        new firebaseInstance.auth.GoogleAuthProvider()
+      );
+    } else if (name === "github") {
+      await fAuth.signInWithPopup(
+        new firebaseInstance.auth.GithubAuthProvider()
+      );
+    }
   };
 
   return (
@@ -92,8 +109,12 @@ function Auth() {
         </button>
       </form>
       <div>
-        <button>Google</button>
-        <button>Github</button>
+        <button name="google" onClick={socialOnClick}>
+          Google
+        </button>
+        <button name="github" onClick={socialOnClick}>
+          Github
+        </button>
         <button onClick={onClick}>
           {createAccount ? "have account?" : "you don't have an account?"}
         </button>
