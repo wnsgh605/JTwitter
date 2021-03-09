@@ -5,14 +5,16 @@ import Home from "../routes/Home";
 import Navigation from "../components/Navigation";
 import Profile from "../routes/Profile";
 
-function CRouter({ isLoggedIn }) {
+function CRouter({ isLoggedIn, userObj }) {
   return (
     <Router>
       {isLoggedIn && <Navigation />}
       {isLoggedIn ? (
         <>
           <Switch>
-            <Route exact path="/" component={Home} />
+            <Route exact path="/">
+              <Home userObj={userObj} />
+            </Route>
             <Route exact path="/profile" component={Profile} />
           </Switch>
         </>

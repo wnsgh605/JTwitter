@@ -4,11 +4,13 @@ import { fAuth } from "../firebase";
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
   useEffect(
     () =>
       fAuth.onAuthStateChanged((user) => {
         if (user) {
           setIsLoggedIn(true);
+          setUserObj(user);
         } else {
           setIsLoggedIn(false);
         }
@@ -17,7 +19,11 @@ function App() {
     []
   );
 
-  return init ? <CRouter isLoggedIn={isLoggedIn}></CRouter> : "Initializing";
+  return init ? (
+    <CRouter isLoggedIn={isLoggedIn} userObj={userObj}></CRouter>
+  ) : (
+    "Initializing"
+  );
 }
 
 export default App;
